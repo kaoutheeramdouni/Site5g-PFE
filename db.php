@@ -1,9 +1,9 @@
 <?php
 // db.php
-$host    = 'localhost';
-$db      = '5G'; // Remplacez par le nom de votre base
-$user    = 'root';           // Remplacez par votre utilisateur
-$pass    = '';               // Remplacez par votre mot de passe
+$host    = 'db';               // nom du conteneur MySQL
+$db      = 'site5g';           // base définie dans docker-compose.yml
+$user    = 'site5guser';
+$pass    = 'Site5gPass123';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -13,9 +13,11 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
 
+
+
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-    die("Erreur de connexion à la base de données : " . $e->getMessage());
+    error_log("Erreur DB: " . $e->getMessage());
+    exit("Erreur interne, réessayez plus tard.");
 }
-?>

@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    container_name: site5g-web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - site5g-net
+
+  db:
+    image: mysql:8.0
+    container_name: site5g-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: RootPass123
+      MYSQL_DATABASE: site5g
+      MYSQL_USER: site5guser
+      MYSQL_PASSWORD: Site5gPass123
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./5g.sql:/docker-entrypoint-initdb.d/5g.sql
+    networks:
+      - site5g-net
+
+networks:
+  site5g-net:
+
+volumes:
+  db_data:
