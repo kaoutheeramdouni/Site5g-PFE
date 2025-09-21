@@ -2,7 +2,7 @@
 trigger:
   branches:
     include:
-      - main   # pipeline déclenché sur push vers main
+      - main   # déclenche le pipeline à chaque push sur main
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -12,38 +12,29 @@ variables:
   imageTag: '$(Build.BuildId)'
 
 steps:
-# 1️⃣ Checkout du code
+# 1️⃣ Checkout du code depuis GitHub
 - task: Checkout@1
   displayName: 'Checkout GitHub repo'
 
-# 2️⃣ Build Docker Image
+# 2️⃣ Build et push Docker image vers ACR
 - task: Docker@2
-  displayName: 'Build Docker Image'
+  displayName: 'Build and Push Docker Image'
   inputs:
-    containerRegistry: 'ACRPFE2025UVT'   # Service connection ACR
-    repository: '$(imageName)'
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
+    command: 'buildAndPush'
+    repository: 'acrpfe2025uvt.azurecr.io/$(imageName)'
+    dockerfile: '**/Dockerfile'
     tags: |
       $(imageTag)
+    username: '$(ACR_USERNAME)'   # variable sécurisée
+    password: '$(ACR_PASSWORD)'   # variable sécurisée
 
-# 3️⃣ Push Docker Image vers ACR
-- task: Docker@2
-  displayName: 'Push Docker Image to ACR'
-  inputs:
-    containerRegistry: 'ACRPFE2025UVT'   # Service connection ACR
-    repository: '$(imageName)'
-    command: 'push'
-    tags: |
-      $(imageTag)
-
-# 4️⃣ Déployer sur AKS Engine
+# 3️⃣ Déploiement sur AKS Engine
 - task: Kubernetes@1
   displayName: 'Deploy to AKS Engine'
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceConnection: 'AKS Engine'  # Service connection AKS Engine
+    kubernetesServiceConnection: 'AKS Engine'  # service connection pour ton cluster
     namespace: 'default'
     command: 'apply'
     useConfigurationFile: true
-    configuration: '**/k8s/deployment.yaml'   # chemin vers ton deployment.yaml
+    configuration: '**/k8s/deployment.yaml'   # chemin vers ton fichier deployment.yaml
