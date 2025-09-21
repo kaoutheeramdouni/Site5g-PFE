@@ -1,0 +1,49 @@
+# azure-pipelines.yml
+trigger:
+  branches:
+    include:
+      - main   # pipeline déclenché sur push vers main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageName: 'site5g'
+  imageTag: '$(Build.BuildId)'
+
+steps:
+# 1️⃣ Checkout du code
+- task: Checkout@1
+  displayName: 'Checkout GitHub repo'
+
+# 2️⃣ Build Docker Image
+- task: Docker@2
+  displayName: 'Build Docker Image'
+  inputs:
+    containerRegistry: 'ACRPFE2025UVT'   # Service connection ACR
+    repository: '$(imageName)'
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(imageTag)
+
+# 3️⃣ Push Docker Image vers ACR
+- task: Docker@2
+  displayName: 'Push Docker Image to ACR'
+  inputs:
+    containerRegistry: 'ACRPFE2025UVT'   # Service connection ACR
+    repository: '$(imageName)'
+    command: 'push'
+    tags: |
+      $(imageTag)
+
+# 4️⃣ Déployer sur AKS Engine
+- task: Kubernetes@1
+  displayName: 'Deploy to AKS Engine'
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceConnection: 'AKS Engine'  # Service connection AKS Engine
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: '**/k8s/deployment.yaml'   # chemin vers ton deployment.yaml
