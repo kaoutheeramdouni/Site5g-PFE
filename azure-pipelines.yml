@@ -34,5 +34,14 @@ steps:
     command: 'push'
     tags: |
       $(imageTag)
-
+# 4️⃣ Déployer sur AKS Engine
+- task: Kubernetes@1
+  displayName: 'Deploy to AKS Engine'
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS Engine'  # Service connection AKS Engine
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: '**/k8s/deployment.yaml'
 
