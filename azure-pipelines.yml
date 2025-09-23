@@ -21,7 +21,7 @@ steps:
     containerRegistry: 'acr-test'   # Service connection ACR
     repository: '$(imageName)'
     command: 'build'
-    dockerfile: '**/Dockerfile'
+    dockerfile: 'https://github.com/kaoutheeramdouni/Site5g-PFE/blob/azure-pipelines/Dockerfile'
     tags: |
       $(imageTag)
 
