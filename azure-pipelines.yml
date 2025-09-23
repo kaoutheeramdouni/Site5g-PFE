@@ -4,7 +4,7 @@ trigger:
       - main   # pipeline déclenché sur push vers main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'Default'
 
 variables:
   imageName: 'site5g'
