@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: site5g-deployment
+  labels:
+    app: site5g
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: site5g
+  template:
+    metadata:
+      labels:
+        app: site5g
+    spec:
+      containers:
+      - name: site5g-container
+        image: acrpfe2025uvt.azurecr.io/site5g:latest   # ton image Docker
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: site5g-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: site5g
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
