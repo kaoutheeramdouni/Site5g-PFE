@@ -54,5 +54,5 @@ steps:
     namespace: 'default'
     command: 'apply'
     useConfigurationFile: true
-    configuration: 'k8s/deployment.yaml'
+    configuration: 'K8s/deployment.yaml'
 
