@@ -1,0 +1,58 @@
+trigger:
+  branches:
+    include:
+      - azure-pipelines
+
+resources:
+  repositories:
+    - repository: GitHub   # an internal alias
+      type: github
+      name: kaoutheeramdouni/Site5g-PFE
+      ref: refs/heads/azure-pipelines
+      endpoint: GitHub  # GitHub service connection in DevOps
+
+pool:
+  name: 'Default'  # your self-hosted agent pool
+
+variables:
+  imageName: 'site5g'
+  imageTag: '$(Build.BuildId)'
+
+steps:
+# 1️⃣ Checkout GitHub repo
+- checkout: GitHub
+  displayName: 'Checkout GitHub repository'
+
+# 2️⃣ Build Docker Image
+- task: Docker@2
+  displayName: 'Build Docker Image'
+  inputs:
+    containerRegistry: 'acr-test'
+    repository: 'kaoutheeramdouni/site5g'
+    command: 'build'
+    dockerfile: 'Dockerfile'  # adjust if your Dockerfile is in a subfolder
+    buildContext: '.'
+    tags: |
+      $(imageTag)
+
+# 3️⃣ Push Docker Image to DockerHub
+- task: Docker@2
+  displayName: 'Push Docker Image'
+  inputs:
+    containerRegistry: 'acr-test'
+    repository: 'kaoutheeramdouni/site5g'
+    command: 'push'
+    tags: |
+      $(imageTag)
+
+# 4️⃣ Déployer sur AKS Engine
+- task: Kubernetes@1
+  displayName: 'Deploy to AKS Engine'
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS Engine'  # Service connection AKS Engine
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'K8s/deployment.yaml'
+
