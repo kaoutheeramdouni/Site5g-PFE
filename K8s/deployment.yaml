@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: site5g-container
-        image: acrpfe2025uvt.azurecr.io/site5g:latest   # ton image Docker
+        image: acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:38
+   # ton image Docker
         ports:
         - containerPort: 80
 
