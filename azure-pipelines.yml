@@ -39,7 +39,7 @@ steps:
     dockerfile: 'Dockerfile'                      # chemin vers le Dockerfile
     buildContext: '.'                             # contexte de build = répertoire courant
     tags: |
-      $(imageTag)                                 # tag appliqué = Build ID
+      $(imageTag)                                 
 
 # 3 Publication de l’image Docker dans le registre
 - task: Docker@2
