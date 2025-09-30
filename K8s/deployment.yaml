@@ -28,12 +28,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: site5g-service
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"  # LB interne
 spec:
   type: LoadBalancer
+  loadBalancerIP: 10.10.2.50  # IP privée fixe dans le subnet LAN
   selector:
     app: site5g
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
-
