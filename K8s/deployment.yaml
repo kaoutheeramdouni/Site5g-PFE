@@ -16,10 +16,11 @@ spec:
     spec:
       containers:
       - name: site5g-container
-        image: acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:38
-   # ton image Docker
+        image: acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:41
         ports:
         - containerPort: 80
+      imagePullSecrets:       # <-- ajout de ton secret ACR
+      - name: acr-secret
 
 ---
 apiVersion: v1
