@@ -1,58 +1,63 @@
+# Déclenche le pipeline lorsqu'un commit est poussé sur la branche azure-pipelines
 trigger:
   branches:
     include:
       - azure-pipelines
 
+# Définition des ressources externes (ici un dépôt GitHub)
 resources:
   repositories:
-    - repository: GitHub   # an internal alias
-      type: github
-      name: kaoutheeramdouni/Site5g-PFE
-      ref: refs/heads/azure-pipelines
-      endpoint: GitHub  # GitHub service connection in DevOps
+    - repository: GitHub   # alias interne utilisé pour ce repo
+      type: github          # type de ressource : GitHub
+      name: kaoutheeramdouni/Site5g-PFE   # chemin complet du repo
+      ref: refs/heads/azure-pipelines     # branche suivie
+      endpoint: GitHub      # connexion de service GitHub dans Azure DevOps
 
+# Définition du pool d’agents utilisé
 pool:
-  name: 'Default'  # your self-hosted agent pool
+  name: 'Default'  # agent pool self-hosted appelé "Default"
 
+#Variables globales utilisées dans le pipeline
 variables:
-  imageName: 'site5g'
-  imageTag: '$(Build.BuildId)'
+  imageName: 'site5g'                 # nom logique de l’image
+  imageTag: '$(Build.BuildId)'        # tag basé sur l’ID de build généré automatiquement
 
+#Début des étapes du pipeline
 steps:
-# 1️⃣ Checkout GitHub repo
+
+# Récupération du code source depuis GitHub
 - checkout: GitHub
   displayName: 'Checkout GitHub repository'
 
-# 2️⃣ Build Docker Image
+# 2 Construction de l’image Docker
 - task: Docker@2
   displayName: 'Build Docker Image'
   inputs:
-    containerRegistry: 'acr-test'
-    repository: 'kaoutheeramdouni/site5g'
-    command: 'build'
-    dockerfile: 'Dockerfile'  # adjust if your Dockerfile is in a subfolder
-    buildContext: '.'
+    containerRegistry: 'acr-test'                 # registre de conteneurs configuré
+    repository: 'kaoutheeramdouni/site5g'         # repository cible dans le registre
+    command: 'build'                              # commande Docker = build
+    dockerfile: 'Dockerfile'                      # chemin vers le Dockerfile
+    buildContext: '.'                             # contexte de build = répertoire courant
     tags: |
-      $(imageTag)
+      $(imageTag)                                 # tag appliqué = Build ID
 
-# 3️⃣ Push Docker Image to DockerHub
+# 3 Publication de l’image Docker dans le registre
 - task: Docker@2
   displayName: 'Push Docker Image'
   inputs:
-    containerRegistry: 'acr-test'
-    repository: 'kaoutheeramdouni/site5g'
-    command: 'push'
+    containerRegistry: 'acr-test'                 # même registre utilisé
+    repository: 'kaoutheeramdouni/site5g'         # même repository que précédemment
+    command: 'push'                               # commande Docker = push
     tags: |
-      $(imageTag)
+      $(imageTag)                                 # on pousse l’image taguée
 
-# 4️⃣ Déployer sur AKS Engine
+# 4️ Déploiement de l’application sur AKS Engine
 - task: Kubernetes@1
   displayName: 'Deploy to AKS Engine'
   inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'AKS Engine'  # Service connection AKS Engine
-    namespace: 'default'
-    command: 'apply'
-    useConfigurationFile: true
-    configuration: 'K8s/deployment.yaml'
-
+    connectionType: 'Kubernetes Service Connection'   # type de connexion
+    kubernetesServiceEndpoint: 'AKS Engine'           # connexion configurée vers AKS Engine
+    namespace: 'default'                              # namespace cible du cluster
+    command: 'apply'                                  # commande kubectl = apply
+    useConfigurationFile: true                        # on utilise un fichier YAML
+    configuration: 'K8s/deployment.yaml'              # chemin du fichier de déploiement
