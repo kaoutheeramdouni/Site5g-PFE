@@ -45,6 +45,12 @@ steps:
     tags: |
       $(imageTag)
 
+      # 3️⃣.5 Update image tag dynamically
+- script: |
+    sed -i "s#image: kaoutheeramdouni/site5g:.*#image: kaoutheeramdouni/site5g:$(imageTag)#" K8s/deployment.yaml
+    echo "✅ Image tag remplacé par $(imageTag) dans deployment.yaml"
+  displayName: 'Update image tag in deployment.yaml'
+
 # 4️⃣ Déployer sur AKS Engine
 - task: Kubernetes@1
   displayName: 'Deploy to AKS Engine'
