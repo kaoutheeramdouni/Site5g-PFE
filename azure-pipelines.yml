@@ -50,7 +50,7 @@ steps:
   displayName: 'Deploy to AKS Engine'
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'AKS Engine'  # Service connection AKS Engine
+    kubernetesServiceEndpoint: 'AKS_ENGINE-NEW'  # Service connection AKS Engine
     namespace: 'default'
     command: 'apply'
     useConfigurationFile: true
