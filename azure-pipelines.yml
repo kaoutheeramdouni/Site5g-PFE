@@ -15,8 +15,9 @@ pool:
   name: 'Default'  # your self-hosted agent pool
 
 variables:
-  imageName: 'site5g'
+  imageName: 'kaoutheeramdouni/site5g'
   imageTag: '$(Build.BuildId)'
+  fullImageName: 'acrpfe2025uvt.azurecr.io/$(imageName):$(imageTag)'
 
 steps:
 # 1️⃣ Checkout GitHub repo
@@ -28,7 +29,7 @@ steps:
   displayName: 'Build Docker Image'
   inputs:
     containerRegistry: 'acr-test'
-    repository: 'kaoutheeramdouni/site5g'
+    repository: '$(imageName)'
     command: 'build'
     dockerfile: 'Dockerfile'  # adjust if your Dockerfile is in a subfolder
     buildContext: '.'
@@ -40,19 +41,19 @@ steps:
   displayName: 'Push Docker Image'
   inputs:
     containerRegistry: 'acr-test'
-    repository: 'kaoutheeramdouni/site5g'
+    repository: '$(imageName)'
     command: 'push'
     tags: |
       $(imageTag)
 
 
-# 4️⃣ Déployer sur AKS Engine
-- task: Kubernetes@1
+- task: KubernetesManifest@0
   displayName: 'Deploy to AKS Engine'
   inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'AKS_ENGINE-NEW'  # Service connection AKS Engine
+    action: deploy
+    kubernetesServiceEndpoint: 'AKS_ENGINE-NEW'   # le service connection
     namespace: 'default'
-    command: 'apply'
-    useConfigurationFile: true
-    configuration: 'K8s/deployment.yaml'
+    manifests: |
+      K8s/deployment.yaml
+    containers: |
+      acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:$(Build.BuildId)
