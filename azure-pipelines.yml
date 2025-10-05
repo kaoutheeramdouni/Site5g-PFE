@@ -48,12 +48,11 @@ steps:
 
 
 - task: KubernetesManifest@0
-  displayName: 'Deploy to AKS Engine'
+  displayName: 'Deploy to AKS Engine with new image'
   inputs:
     action: deploy
-    kubernetesServiceEndpoint: 'AKS_ENGINE-NEW'   # le service connection
+    kubernetesServiceEndpoint: 'AKS_ENGINE-NEW'
     namespace: 'default'
-    manifests: |
-      K8s/deployment.yaml
+    manifests: 'K8s/deployment.yaml'
     containers: |
       acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:$(Build.BuildId)
