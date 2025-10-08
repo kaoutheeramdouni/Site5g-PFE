@@ -57,3 +57,13 @@ steps:
     command: 'apply'
     useConfigurationFile: true
     configuration: 'K8s/deployment.yaml'
+
+    # Mise à jour dynamique de l'image
+- task: Kubernetes@1
+  displayName: 'Update image'
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS_ENGINE-NEW'
+    namespace: 'default'
+    command: 'set'
+    arguments: 'image deployment/site5g-deployment site5g-container=$(fullImageName)'
