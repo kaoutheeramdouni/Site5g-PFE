@@ -1,9 +1,8 @@
 <?php
-// db.php
-$host    = 'db';               // nom du conteneur MySQL
-$db      = 'site5g';           // base définie dans docker-compose.yml
-$user    = 'site5guser';
-$pass    = 'Site5gPass123';
+$host    = getenv('DB_HOST') ?: 'mysql-service';
+$db      = getenv('DB_NAME') ?: 'site5g';
+$user    = getenv('DB_USER') ?: 'site5guser';
+$pass    = getenv('DB_PASSWORD') ?: 'Site5gPass123';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -12,8 +11,6 @@ $options = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
-
-
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);

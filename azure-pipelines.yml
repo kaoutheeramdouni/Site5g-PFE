@@ -46,7 +46,17 @@ steps:
     tags: |
       $(imageTag)
 
-
+# 1️⃣ Déployer MySQL
+- task: Kubernetes@1
+  displayName: 'Deploy MySQL'
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS_ENGINE-NEW'
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'K8s/mysql-deployment.yaml'
+    
 # 4️⃣ Déployer sur AKS Engine
 - task: Kubernetes@1
   displayName: 'Deploy to AKS Engine'

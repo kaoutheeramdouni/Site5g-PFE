@@ -19,8 +19,19 @@ spec:
         image: acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:latest 
         ports:
         - containerPort: 80
+        
       imagePullSecrets:       # <-- ajout de ton secret ACR
       - name: acr-secret
+      
+      env:                    
+          - name: DB_HOST
+            value: "mysql-service"
+          - name: DB_USER
+            value: "root"
+          - name: DB_PASSWORD
+            value: "rootpassword"
+          - name: DB_NAME
+            value: "site5gdb"
 
 ---
 apiVersion: v1
@@ -37,3 +48,14 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 80
+
+#connexion mysql
+env:
+  - name: DB_HOST
+    value: "mysql-service"
+  - name: DB_USER
+    value: "root"
+  - name: DB_PASSWORD
+    value: "rootpassword"
+  - name: DB_NAME
+    value: "site5gdb"
