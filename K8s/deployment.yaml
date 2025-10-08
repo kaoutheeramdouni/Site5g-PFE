@@ -15,23 +15,21 @@ spec:
         app: site5g
     spec:
       containers:
-      - name: site5g-container
-        image: acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:latest 
-        ports:
-        - containerPort: 80
-        
-      imagePullSecrets:       # <-- ajout de ton secret ACR
-      - name: acr-secret
-      
-      env:                    
-          - name: DB_HOST
-            value: "mysql-service"
-          - name: DB_USER
-            value: "root"
-          - name: DB_PASSWORD
-            value: "rootpassword"
-          - name: DB_NAME
-            value: "site5gdb"
+        - name: site5g-container
+          image: acrpfe2025uvt.azurecr.io/kaoutheeramdouni/site5g:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              value: "mysql-service"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASSWORD
+              value: "rootpassword"
+            - name: DB_NAME
+              value: "site5gdb"
+      imagePullSecrets:
+        - name: acr-secret
 
 ---
 apiVersion: v1
@@ -39,23 +37,12 @@ kind: Service
 metadata:
   name: site5g-service
   annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"  # LB interne
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   selector:
     app: site5g
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-
-#connexion mysql
-env:
-  - name: DB_HOST
-    value: "mysql-service"
-  - name: DB_USER
-    value: "root"
-  - name: DB_PASSWORD
-    value: "rootpassword"
-  - name: DB_NAME
-    value: "site5gdb"
+    - protocol: TCP
+      port: 80
+      targetPort: 80
