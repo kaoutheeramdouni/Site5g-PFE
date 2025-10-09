@@ -5,7 +5,8 @@ $user    = getenv('DB_USER') ?: 'site5guser';
 $pass    = getenv('DB_PASSWORD') ?: 'Site5gPass123';
 $charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset;ssl-mode=DISABLED";
+
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
