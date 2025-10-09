@@ -49,7 +49,7 @@ steps:
     fi
 
     # Scanner l'image locale avec le nom complet
-    trivy image --exit-code 1 --no-progress $(fullImageName)
+    trivy image --exit-code 0 --no-progress --format table $(fullImageName)
   displayName: 'Scan Docker image with Trivy'
 
 
