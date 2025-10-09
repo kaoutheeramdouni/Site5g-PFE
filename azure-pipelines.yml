@@ -58,7 +58,7 @@ steps:
   displayName: 'Push Docker Image'
   inputs:
     containerRegistry: 'acr-test'
-    repository: '$(fullImageName)'
+    repository: '$(imageName)'
     command: 'push'
     tags: |
       $(imageTag)
