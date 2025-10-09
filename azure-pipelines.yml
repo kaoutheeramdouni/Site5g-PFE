@@ -39,15 +39,19 @@ steps:
 
 # 3️⃣ Scan Docker Image with Trivy (local image)
 - script: |
+    # Taguer l'image locale avec le nom complet pour Trivy
+    docker tag $(imageName):$(imageTag) $(fullImageName)
+
     # Installer Trivy si ce n'est pas déjà fait
     if ! command -v trivy &> /dev/null; then
       wget https://github.com/aquasecurity/trivy/releases/download/v0.67.1/trivy_0.67.1_Linux-64bit.deb
       sudo dpkg -i trivy_0.67.1_Linux-64bit.deb
     fi
 
-    # Scanner l'image locale juste construite
-    trivy image --exit-code 1 --no-progress $(imageName):$(imageTag)
-  displayName: 'Scan local Docker image with Trivy'
+    # Scanner l'image locale avec le nom complet
+    trivy image --exit-code 1 --no-progress $(fullImageName)
+  displayName: 'Scan Docker image with Trivy'
+
 
 # 3️⃣ Push Docker Image to DockerHub
 - task: Docker@2
