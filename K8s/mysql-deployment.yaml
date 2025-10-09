@@ -21,7 +21,7 @@ spec:
           - name: MYSQL_ROOT_PASSWORD
             value: "RootPass123"
           - name: MYSQL_DATABASE
-            value: "site5g"
+            value: "site5gdb"
           - name: MYSQL_USER
             value: "site5guser"
           - name: MYSQL_PASSWORD

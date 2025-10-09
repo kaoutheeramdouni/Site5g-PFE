@@ -27,7 +27,7 @@ spec:
             - name: DB_PASSWORD
               value: "Site5gPass123"
             - name: DB_NAME
-              value: "site5g"
+              value: "site5gdb"
       imagePullSecrets:
         - name: acr-secret
 
