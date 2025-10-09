@@ -24,6 +24,7 @@ steps:
 - checkout: GitHub
   displayName: 'Checkout GitHub repository'
 
+
 # 2️⃣ Build Docker Image
 - task: Docker@2
   displayName: 'Build Docker Image'
@@ -35,6 +36,17 @@ steps:
     buildContext: '.'
     tags: |
       $(imageTag)
+
+- script: |
+    # Installer Trivy si ce n'est pas déjà fait
+    if ! command -v trivy &> /dev/null; then
+      wget https://github.com/aquasecurity/trivy/releases/download/v0.67.1/trivy_0.67.1_Linux-64bit.deb
+      sudo dpkg -i trivy_0.67.1_Linux-64bit.deb
+    fi
+
+    # Scanner l'image
+    trivy image --exit-code 1 --no-progress $(fullImageName)
+  displayName: 'Scan Docker image with Trivy'
 
 # 3️⃣ Push Docker Image to DockerHub
 - task: Docker@2
