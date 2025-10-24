@@ -9,7 +9,7 @@ resources:
       type: github
       name: kaoutheeramdouni/Site5g-PFE
       ref: refs/heads/azure-pipelines
-      endpoint: GitHub  # GitHub service connection in DevOps
+      endpoint: GitHubNewToken  # GitHub service connection in DevOps
 
 pool:
   name: 'Default'  # your self-hosted agent pool
